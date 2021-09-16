@@ -13,7 +13,7 @@ class CustomUserAdmin(UserAdmin):
             "Custom Profile",
             {
                 "fields": (
-                    "avatar",
+                    "avartar",
                     "gender",
                     "bio",
                     "birthdate",
