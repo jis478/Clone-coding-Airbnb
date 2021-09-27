@@ -64,19 +64,30 @@ class Room(core_models.TimeStampedModel):
         on_delete=models.SET_NULL,
         null=True,
     )
-    amenities = models.ManyToManyField(Amenity)
-    facilities = models.ManyToManyField(Facility)
-    house_rules = models.ManyToManyField(HouseRule)
+    amenities = models.ManyToManyField(Amenity, related_name="rooms")
+    facilities = models.ManyToManyField(Facility, related_name="rooms")
+    house_rules = models.ManyToManyField(HouseRule, related_name="rooms")
 
     def __str__(self):
         return self.name
+
+    def total_avg(self):
+        reviews_all = (
+            self.reviews.all()
+        )  # bringing review class objects for each room object
+        reviews = 0
+        for review in reviews_all:
+            reviews += review.rating_avg()
+        return round(reviews / len(reviews_all), 2)
 
 
 class Photo(core_models.TimeStampedModel):
 
     caption = models.CharField(max_length=80)
     file = models.ImageField()
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    room = models.ForeignKey(
+        Room, related_name="photos", on_delete=models.CASCADE
+    )  # room -> photos, not photos -> room
 
     def __str__(self):
         return self.caption
