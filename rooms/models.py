@@ -71,14 +71,15 @@ class Room(core_models.TimeStampedModel):
     def __str__(self):
         return self.name
 
-    def total_avg(self):
-        reviews_all = (
-            self.reviews.all()
-        )  # bringing review class objects for each room object
+    def total_avg(self):  # bringing review class objects for each room object
+        reviews_all = self.reviews.all()
         reviews = 0
         for review in reviews_all:
             reviews += review.rating_avg()
-        return round(reviews / len(reviews_all), 2)
+        if reviews > 0:
+            return round(reviews / len(reviews_all), 2)
+        else:
+            return 0
 
 
 class Photo(core_models.TimeStampedModel):
