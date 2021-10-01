@@ -71,6 +71,10 @@ class Room(core_models.TimeStampedModel):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        self.city = str.capitalize(self.city)
+        super().save(*args, **kwargs)
+
     def total_avg(self):  # bringing review class objects for each room object
         reviews_all = self.reviews.all()
         reviews = 0
