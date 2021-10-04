@@ -9,14 +9,15 @@ from rooms.models import RoomType as roomtype_model
 
 from django_seed import Seed
 
+NAME = "room"
 
 class Command(BaseCommand):
 
-    help = "Create fake room data"
+    help = f"Create fake {NAME} data"
 
     def add_arguments(self, parser):
 
-        parser.add_argument("--number", type=int, default=1, help="how many rooms?")
+        parser.add_argument("--number", type=int, default=1, help="how many {NAME}s?")
 
     def handle(self, *args, **kwargs):
 
@@ -30,10 +31,11 @@ class Command(BaseCommand):
             room_model,
             number,
             {
-                "name": seeder.faker.address(),
+                "name": lambda x: seeder.faker.address(),
                 "host": lambda x: random.choice(host),
                 "roomtype": lambda x: random.choice(roomtype),
                 "price": lambda x: random.randint(30000, 2000000),
+                "guests": lambda x: random.randint(1, 10),
                 "beds": lambda x: random.randint(1, 5),
                 "bedrooms": lambda x: random.randint(1, 5),
                 "baths": lambda x: random.randint(1, 5),
@@ -67,4 +69,4 @@ class Command(BaseCommand):
             if float(random.random()) > 0.5:
                 room.facilities.add(f)
 
-        self.stdout.write(self.style.SUCCESS(f"{number} room(s) created"))
+        self.stdout.write(self.style.SUCCESS(f"{number} {NAME}(s) created"))
