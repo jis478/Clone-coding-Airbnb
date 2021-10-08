@@ -1,3 +1,3 @@
 
 
-##### At leat one commit per day!
+### At least one commit per day!
