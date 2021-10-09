@@ -1,4 +1,5 @@
 from django.views.generic import ListView
+from django.shortcuts import render
 from . import models
 
 
@@ -12,3 +13,8 @@ class Homeview(ListView):
     ordering = "name"
     page_kwarg = "page"
     template_name = "rooms/home.html"
+
+
+def room_detail(request):
+
+    render(request, "rooms/detail.html")
