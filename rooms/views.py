@@ -1,5 +1,7 @@
-from django.views.generic import ListView
-from django.shortcuts import render
+from django.views.generic import ListView, DetailView
+from django.urls import reverse
+from django.http import Http404
+from django.shortcuts import render, redirect
 from . import models
 
 
@@ -12,9 +14,19 @@ class Homeview(ListView):
     paginate_orphans = 5
     ordering = "name"
     page_kwarg = "page"
-    template_name = "rooms/home.html"
+    template_name = "rooms/room_list.html"
 
 
-def room_detail(request):
+# # Function based view
+# def room_detail(request, pk):
+#     try:
+#         room = models.Room.objects.get(pk=pk)
+#     except models.Room.DoesNotExist:
+#         # return redirect(reverse("core:home"))
+#         raise Http404()
+#     return render(request, "rooms/detail.html", context={"room": room})
 
-    render(request, "rooms/detail.html")
+
+class RoomDetail(DetailView):
+    model = models.Room
+    template_name = "rooms/room_detail.html"
