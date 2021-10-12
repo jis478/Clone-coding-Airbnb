@@ -2,6 +2,7 @@ from django.views.generic import ListView, DetailView
 from django.urls import reverse
 from django.http import Http404
 from django.shortcuts import render, redirect
+from django_countries import countries
 from . import models
 
 
@@ -30,3 +31,12 @@ class Homeview(ListView):
 class RoomDetail(DetailView):
     model = models.Room
     template_name = "rooms/room_detail.html"
+
+
+def search(request):
+    city = request.GET.get("city", "Anywhere")
+    city = str.capitalize(city)
+    # countries = request.GET.get("countries")
+    return render(
+        request, "rooms/search.html", context={"city": city, "countries": countries}
+    )
