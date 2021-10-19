@@ -4,6 +4,7 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 from django_countries import countries
 from . import models, forms
+from django.core.paginator import Paginator
 
 
 class Homeview(ListView):
@@ -135,10 +136,82 @@ class RoomDetail(DetailView):
 
 
 def search(request):
-    form = forms.SearchForm(request.GET)
-    return render(
-        request,
-        "rooms/search.html",
-        context={"form": form}
-        # context={"city": city, "countries": countries, "room_types": room_types},
-    )
+
+    country = request.GET.get("country")
+
+    if country:
+
+        form = forms.SearchForm(request.GET)  # Import all the input data
+
+        if form.is_valid():
+
+            city = form.cleaned_data("city")
+            price = form.cleaned_data("price")
+            country = form.cleaned_data("country")
+            room_type = form.cleaned_data("room_type")
+            guests = form.cleaned_data("guests")
+            bedrooms = form.cleaned_data("bedrooms")
+            beds = form.cleaned_data("beds")
+            baths = form.cleaned_data("baths")
+            instant_book = form.cleaned_data("instant_book")
+            superhost = form.cleaned_data("superhost")
+            amenities = form.cleaned_data("amenities")
+            facilities = form.cleaned_data("facilities")
+
+            filter_args = {}
+
+            if city != "Anywhere":  # exclude default
+                filter_args["city__startswith"] = city
+
+            filter_args["country"] = country
+
+            if room_type is not None:
+                filter_args[
+                    "room_type__exact"
+                ] = room_type  # room_type is a foreign key
+
+            if price is not None:
+                filter_args["price__lte"] = price
+
+            if guests is not None:
+                filter_args["price__gte"] = guests
+
+            if bedrooms is not None:
+                filter_args["bedrooms__gte"] = bedrooms
+
+            if beds is not None:
+                filter_args["beds__gte"] = beds
+
+            if baths is not None:
+                filter_args["baths__gte"] = baths
+
+            if instant_book is True:
+                filter_args["instant_book"] = True
+
+            if superhost is True:
+                filter_args["host__superhost"] = True
+
+            for a in amenities:
+                filter_args["amenities"] = a
+
+            for f in facilities:
+                filter_args["facilities"] = f
+
+            print(filter_args)
+
+            qs = models.Room.objects.filter(**filter_args).order_by("created")
+
+            paginator = Paginator(qs, 10, orphans=5)
+
+            page = request.GET.get("page", 1)
+
+            rooms = paginator.get_page(page)
+
+            return render(
+                request, "rooms/search.html", context={"form": form, "rooms": rooms}
+            )
+
+    else:
+        form = forms.SearchForm()
+
+    return render(request, "rooms/search.html", context={"form": form})
