@@ -9,6 +9,7 @@
 
 {% block content %}
     <form method="POST" action = "{% url "users:login" %}">
+        {% csrf_token %}
         {{form.as_p}}
         <button>login</button>
     </form>
