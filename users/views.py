@@ -19,3 +19,8 @@ class LoginView(View):
                 login(request, user)
                 return redirect(reverse("core:home"))
         return render(request, "users/login.html", context={"form": form})
+
+
+def log_out(request):
+    logout(request)
+    return redirect(reverse("core:home"))
