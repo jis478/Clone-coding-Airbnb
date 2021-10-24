@@ -141,3 +141,11 @@ MEDIA_ROOT = os.path.join(
 )  # All the uploaded files are stored in this folder.
 
 MEDIA_URL = "/media/"  # URL routing
+
+# Email configuration (These are all fake.)
+
+EMAIL_HOST = "smtp.mailgun.org"
+EMAIL_PORT = "587"
+EMAIL_HOST_USER = os.environ.get("MAILGUN_USERNAME")
+EMAIL_HOST_PASSWORD = os.environ.get("MAILGUN_PASSWORD")
+EMAIL_FROM = "noreply@smtp.mailgun.org"
